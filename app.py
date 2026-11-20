@@ -77,7 +77,9 @@ if games.empty:
     st.info("No completed games for this selection.")
     st.stop()
 
-rankings, hfa = rank_teams(games)
-st.metric("Home-field advantage", "Unavailable" if hfa is None else f"{hfa:+.2f} pts")
+rankings = rank_teams(games)
+home_games = games[games.neutralsite.eq(False)]
+hfa = (home_games.homepoints - home_games.awaypoints).sum() / len(games)
+st.metric("Home-field advantage", f"{hfa:+.2f} pts")
 st.caption(f"{len(games):,} completed FBS games · SRS in points")
 st.dataframe(rankings, hide_index=True, column_config={"SRS": st.column_config.NumberColumn(format="%.2f")})
