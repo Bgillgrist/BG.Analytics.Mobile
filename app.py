@@ -27,11 +27,13 @@ def load(sql, **params):
         return pd.read_sql(text(sql), connection, params=params)
 
 
+FBS_GAMES = "completed IS TRUE AND LOWER(TRIM(homeclassification)) = 'fbs' AND LOWER(TRIM(awayclassification)) = 'fbs'"
+
 try:
     if url:
-        seasons = load("""
+        seasons = load(f"""
             SELECT DISTINCT season FROM public.game_data
-            WHERE completed IS TRUE AND season IS NOT NULL ORDER BY season DESC
+            WHERE {FBS_GAMES} AND season IS NOT NULL ORDER BY season DESC
         """).season.tolist()
         if not seasons:
             st.info("No completed seasons available.")
@@ -47,7 +49,7 @@ try:
                    TRIM(homeconference) AS homeconference, TRIM(awayconference) AS awayconference,
                    {conference_flag} AS conferencegame
             FROM public.game_data AS g
-            WHERE season = :season AND completed IS TRUE
+            WHERE season = :season AND {FBS_GAMES}
               AND homepoints IS NOT NULL AND awaypoints IS NOT NULL
               AND hometeam <> awayteam
         """, season=season)
@@ -77,5 +79,5 @@ if games.empty:
 
 rankings, hfa = rank_teams(games)
 st.metric("Home-field advantage", "Unavailable" if hfa is None else f"{hfa:+.2f} pts")
-st.caption(f"{len(games):,} completed games · SRS in points")
+st.caption(f"{len(games):,} completed FBS games · SRS in points")
 st.dataframe(rankings, hide_index=True, column_config={"SRS": st.column_config.NumberColumn(format="%.2f")})

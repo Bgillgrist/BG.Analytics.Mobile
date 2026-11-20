@@ -12,8 +12,8 @@ Without credentials, the app opens with fictional scores. For live results, set
 dedicated Neon role with read access to the required `public.game_data` columns
 and TLS with certificate verification.
 
-The national calculation uses completed games with scores across all
-classifications and includes the postseason. Conference mode recalculates using
+The national calculation uses completed FBS-vs-FBS games with scores,
+including the postseason. Conference mode recalculates using
 games where both teams are listed in the selected conference, excluding games
 explicitly marked nonconference when that flag is available. It uses equal
 weights and raw margins. SRS fits home rating minus away rating plus one shared
