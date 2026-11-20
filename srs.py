@@ -10,7 +10,7 @@ def bg_order(rankings):
         for losses, group in rankings.groupby("Losses", sort=True)
     }
     scores = rankings["SRS"]
-    threshold = scores.std(ddof=0)
+    threshold = 0.5 * scores.std(ddof=0)
     order = []
     while groups:
         fewest = next(iter(groups))
