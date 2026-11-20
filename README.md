@@ -24,4 +24,5 @@ from disconnected groups have no head-to-head schedule basis for comparison.
 Wins and losses use the same games as SRS. Ties count toward neither column.
 BG.Rank starts with the fewest losses and uses SRS rank within each loss group.
 For each spot, the best remaining team with exactly one more loss moves ahead
-if its SRS rank is more than 10 places better.
+if its SRS score is higher by more than one population standard deviation
+of SRS scores in the selected season and scope.

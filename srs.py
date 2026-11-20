@@ -9,11 +9,14 @@ def bg_order(rankings):
         losses: deque(group.index)
         for losses, group in rankings.groupby("Losses", sort=True)
     }
+    scores = rankings["SRS"]
+    threshold = scores.std(ddof=0)
     order = []
     while groups:
         fewest = next(iter(groups))
         pick = fewest
-        if fewest + 1 in groups and groups[fewest][0] - groups[fewest + 1][0] > 10:
+        challenger = groups.get(fewest + 1)
+        if challenger and scores.at[challenger[0]] - scores.at[groups[fewest][0]] > threshold:
             pick = fewest + 1
         order.append(groups[pick].popleft())
         if not groups[pick]:
@@ -33,11 +36,11 @@ def rank_teams(games):
     losers = [*games.loc[margins.gt(0), "awayteam"], *games.loc[margins.lt(0), "hometeam"]]
     margins = np.sign(margins) * margins.abs().clip(7, 24)
     ratings = np.linalg.lstsq(matrix, margins, rcond=None)[0]
-    rankings = pd.DataFrame({"Team": teams, "SRS": ratings.round(2)})
+    rankings = pd.DataFrame({"Team": teams, "SRS": ratings})
     rankings = rankings.sort_values(["SRS", "Team"], ascending=[False, True]).reset_index(drop=True)
     rankings.insert(0, "SRS Rank", rankings.index + 1)
     rankings["Wins"] = rankings.Team.map(Counter(winners)).fillna(0).astype(int)
     rankings["Losses"] = rankings.Team.map(Counter(losers)).fillna(0).astype(int)
     rankings = rankings.loc[bg_order(rankings)].reset_index(drop=True)
     rankings.insert(0, "BG.Rank", rankings.index + 1)
-    return rankings
+    return rankings.round({"SRS": 2})
