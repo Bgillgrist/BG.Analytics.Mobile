@@ -4,13 +4,13 @@ import numpy as np
 import pandas as pd
 
 
-def bg_order(rankings):
+def bg_order(rankings, sensitivity):
     groups = {
         losses: deque(group.index)
         for losses, group in rankings.groupby("Losses", sort=True)
     }
     scores = rankings["SRS"]
-    threshold = 0.75 * scores.std(ddof=0)
+    threshold = sensitivity * scores.std(ddof=0)
     order = []
     while groups:
         fewest = next(iter(groups))
@@ -36,7 +36,7 @@ def apply_head_to_head(order, teams, results):
     return order
 
 
-def rank_teams(games):
+def rank_teams(games, sensitivity=0.75):
     teams = sorted(set(games.hometeam) | set(games.awayteam))
     index = {team: i for i, team in enumerate(teams)}
     matrix = np.zeros((len(games), len(teams)))
@@ -54,7 +54,7 @@ def rank_teams(games):
     rankings["Wins"] = rankings.Team.map(Counter(winners)).fillna(0).astype(int)
     rankings["Losses"] = rankings.Team.map(Counter(losers)).fillna(0).astype(int)
     results = Counter(zip(winners, losers))
-    order = apply_head_to_head(bg_order(rankings), rankings.Team, results)
+    order = apply_head_to_head(bg_order(rankings, sensitivity), rankings.Team, results)
     rankings = rankings.loc[order].reset_index(drop=True)
     rankings.insert(0, "BG.Rank", rankings.index + 1)
     return rankings.round({"SRS": 2})

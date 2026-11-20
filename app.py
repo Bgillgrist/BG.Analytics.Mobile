@@ -77,6 +77,7 @@ if games.empty:
     st.info("No completed games for this selection.")
     st.stop()
 
-rankings = rank_teams(games)
+sensitivity = st.slider("Loss sensitivity", 0.0, 3.0, 0.75, 0.05)
+rankings = rank_teams(games, sensitivity)
 st.caption(f"{len(games):,} completed FBS games · SRS in points")
 st.dataframe(rankings, hide_index=True, column_config={"SRS": st.column_config.NumberColumn(format="%.2f")})
