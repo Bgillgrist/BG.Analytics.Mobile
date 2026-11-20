@@ -56,5 +56,5 @@ def rank_teams(games, sensitivity=0.75):
     results = Counter(zip(winners, losers))
     order = apply_head_to_head(bg_order(rankings, sensitivity), rankings.Team, results)
     rankings = rankings.loc[order].reset_index(drop=True)
-    rankings.insert(0, "BG.Rank", rankings.index + 1)
+    rankings.insert(0, "Your ranking", rankings.index + 1)
     return rankings.round({"SRS": 2})

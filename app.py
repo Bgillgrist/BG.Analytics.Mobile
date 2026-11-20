@@ -78,6 +78,12 @@ if games.empty:
     st.stop()
 
 sensitivity = st.slider("Loss sensitivity", 0.0, 3.0, 0.75, 0.05)
+st.markdown(
+    '<div style="display:flex;justify-content:space-between;gap:1rem">'
+    '<small>Team strength matters more</small>'
+    '<small style="text-align:right">Fewer losses matter more</small></div>',
+    unsafe_allow_html=True,
+)
 rankings = rank_teams(games, sensitivity)
 st.caption(f"{len(games):,} completed FBS games · SRS in points")
 st.dataframe(rankings, hide_index=True, column_config={"SRS": st.column_config.NumberColumn(format="%.2f")})

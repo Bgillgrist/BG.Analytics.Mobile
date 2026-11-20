@@ -22,7 +22,7 @@ The least-squares ratings are centered within each disconnected group. Teams
 from disconnected groups have no head-to-head schedule basis for comparison.
 
 Wins and losses use the same games as SRS. Ties count toward neither column.
-BG.Rank starts with the fewest losses and uses SRS rank within each loss group.
+Your ranking starts with the fewest losses and uses SRS rank within each loss group.
 For each spot, the best remaining team with exactly one more loss moves ahead
 if its SRS lead exceeds the Loss sensitivity slider value times the population
 standard deviation of SRS scores in the selected season and scope.
