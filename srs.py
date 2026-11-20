@@ -24,6 +24,18 @@ def bg_order(rankings):
     return order
 
 
+def apply_head_to_head(order, teams, results):
+    spot = 0
+    while spot + 1 < len(order):
+        upper, lower = teams.at[order[spot]], teams.at[order[spot + 1]]
+        if results[lower, upper] > results[upper, lower]:
+            order[spot], order[spot + 1] = order[spot + 1], order[spot]
+            spot += 2
+        else:
+            spot += 1
+    return order
+
+
 def rank_teams(games):
     teams = sorted(set(games.hometeam) | set(games.awayteam))
     index = {team: i for i, team in enumerate(teams)}
@@ -41,6 +53,8 @@ def rank_teams(games):
     rankings.insert(0, "SRS Rank", rankings.index + 1)
     rankings["Wins"] = rankings.Team.map(Counter(winners)).fillna(0).astype(int)
     rankings["Losses"] = rankings.Team.map(Counter(losers)).fillna(0).astype(int)
-    rankings = rankings.loc[bg_order(rankings)].reset_index(drop=True)
+    results = Counter(zip(winners, losers))
+    order = apply_head_to_head(bg_order(rankings), rankings.Team, results)
+    rankings = rankings.loc[order].reset_index(drop=True)
     rankings.insert(0, "BG.Rank", rankings.index + 1)
     return rankings.round({"SRS": 2})
