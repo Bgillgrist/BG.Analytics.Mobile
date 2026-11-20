@@ -11,6 +11,7 @@ def rank_teams(games):
     matrix[rows, games.awayteam.map(index)] = -1
     matrix[:, -1] = (~games.neutralsite.fillna(True)).astype(int)
     margins = games.homepoints - games.awaypoints
+    margins = np.sign(margins) * margins.abs().clip(7, 24)
     solution, _, rank, _ = np.linalg.lstsq(matrix, margins, rcond=None)
     identifiable = rank > np.linalg.matrix_rank(matrix[:, :-1])
     ratings = solution[:-1] if identifiable else np.linalg.lstsq(matrix[:, :-1], margins, rcond=None)[0]

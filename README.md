@@ -16,7 +16,8 @@ The national calculation uses completed FBS-vs-FBS games with scores,
 including the postseason. Conference mode recalculates using
 games where both teams are listed in the selected conference, excluding games
 explicitly marked nonconference when that flag is available. It uses equal
-weights and raw margins. SRS fits home rating minus away rating plus one shared
+weights and limits win margins to 7–24 points, preserving the winner and
+keeping ties at zero. SRS fits home rating minus away rating plus one shared
 home-field term. Neutral sites and unknown venues contribute zero to that term.
 The least-squares ratings are centered within each disconnected group. Teams
 from disconnected groups have no head-to-head schedule basis for comparison.
