@@ -20,6 +20,8 @@ weights and limits win margins to 7–24 points, preserving the winner and
 keeping ties at zero. SRS fits home rating minus away rating.
 The least-squares ratings are centered within each disconnected group. Teams
 from disconnected groups have no head-to-head schedule basis for comparison.
-Displayed home-field advantage is the sum of raw home score differentials
-divided by all completed games in the selected scope. Neutral sites and
-unknown venues count in the denominator and contribute zero to the numerator.
+
+Wins and losses use the same games as SRS. Ties count toward neither column.
+BG.Rank starts with the fewest losses and uses SRS rank within each loss group.
+For each spot, the best remaining team with exactly one more loss moves ahead
+if its SRS rank is more than 10 places better.

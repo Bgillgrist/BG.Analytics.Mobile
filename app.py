@@ -45,7 +45,7 @@ try:
         """).column_name.tolist()
         conference_flag = "COALESCE(conferencegame, TRUE)" if "conferencegame" in columns else "TRUE"
         games = load(f"""
-            SELECT DISTINCT id, hometeam, awayteam, homepoints, awaypoints, neutralsite,
+            SELECT DISTINCT id, hometeam, awayteam, homepoints, awaypoints,
                    TRIM(homeconference) AS homeconference, TRIM(awayconference) AS awayconference,
                    {conference_flag} AS conferencegame
             FROM public.game_data AS g
@@ -57,12 +57,12 @@ try:
         st.info("Preview with fictional scores")
         st.selectbox("Season", [2026])
         games = pd.DataFrame([
-            ("Georgia", "Alabama", 31, 24, False, "SEC", "SEC"),
-            ("Alabama", "Georgia", 27, 31, True, "SEC", "SEC"),
-            ("Ohio State", "Michigan", 27, 17, False, "Big Ten", "Big Ten"),
-            ("Michigan", "Ohio State", 20, 24, False, "Big Ten", "Big Ten"),
-            ("Georgia", "Ohio State", 31, 30, True, "SEC", "Big Ten"),
-        ], columns="hometeam awayteam homepoints awaypoints neutralsite homeconference awayconference".split())
+            ("Georgia", "Alabama", 31, 24, "SEC", "SEC"),
+            ("Alabama", "Georgia", 27, 31, "SEC", "SEC"),
+            ("Ohio State", "Michigan", 27, 17, "Big Ten", "Big Ten"),
+            ("Michigan", "Ohio State", 20, 24, "Big Ten", "Big Ten"),
+            ("Georgia", "Ohio State", 31, 30, "SEC", "Big Ten"),
+        ], columns="hometeam awayteam homepoints awaypoints homeconference awayconference".split())
 except Exception:
     st.error("Could not load game results. Check the server’s Neon connection and read permissions.")
     st.stop()
@@ -78,8 +78,5 @@ if games.empty:
     st.stop()
 
 rankings = rank_teams(games)
-home_games = games[games.neutralsite.eq(False)]
-hfa = (home_games.homepoints - home_games.awaypoints).sum() / len(games)
-st.metric("Home-field advantage", f"{hfa:+.2f} pts")
 st.caption(f"{len(games):,} completed FBS games · SRS in points")
 st.dataframe(rankings, hide_index=True, column_config={"SRS": st.column_config.NumberColumn(format="%.2f")})
